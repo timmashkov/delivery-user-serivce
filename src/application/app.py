@@ -1,3 +1,8 @@
-from src.application.server import APIServer
+from presentation.routers import user_router
 
-service_app = APIServer("service_app")
+from .server import APIServer
+
+service_app = APIServer(
+    name="service_app",
+    routers=[user_router],
+).app
