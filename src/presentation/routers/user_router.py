@@ -1,0 +1,46 @@
+from uuid import UUID
+
+from dishka import FromDishka
+from dishka.integrations.fastapi import inject
+from fastapi import APIRouter
+
+from application.use_cases import UserUseCases
+from presentation.models import CreateUserModel, ReadUserModel
+
+user_router = APIRouter(prefix="/user", tags=["Users"])
+
+
+@user_router.get("/{user_uuid}", response_model=ReadUserModel)
+@inject
+async def read_user(user_uuid: UUID, user_provider: FromDishka[UserUseCases]):
+    return await user_provider.read_single_user(user_uuid)
+
+
+@user_router.get("/", response_model=list[ReadUserModel])
+@inject
+async def read_users(user_provider: FromDishka[UserUseCases]):
+    return await user_provider.get_users_list()
+
+
+@user_router.post("/", response_model=ReadUserModel)
+@inject
+async def create_user(
+    user_data: CreateUserModel, user_provider: FromDishka[UserUseCases]
+):
+    return await user_provider.create_new_user(**user_data.model_dump())
+
+
+@user_router.patch("/{user_uuid}", response_model=ReadUserModel)
+@inject
+async def update_user(
+    user_uuid: UUID, user_data: CreateUserModel, user_provider: FromDishka[UserUseCases]
+):
+    return await user_provider.update_user(
+        **user_data.model_dump(), user_uuid=user_uuid
+    )
+
+
+@user_router.delete("/{user_uuid}", response_model=ReadUserModel)
+@inject
+async def delete_user(user_uuid: UUID, user_provider: FromDishka[UserUseCases]):
+    return await user_provider.delete_user(user_uuid)

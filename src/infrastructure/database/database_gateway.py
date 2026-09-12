@@ -51,7 +51,7 @@ class DatabaseGateway:
         return f"postgresql+{self.dialect}://{self.login}:{self.password}@{self.host}:{self.port}/{self.database}"
 
     @property
-    def pool_config(self) -> dict[str:int]:
+    def pool_config(self) -> dict:
         return {
             "pool_size": self.pool_size,
             "max_overflow": self.max_overflow,
