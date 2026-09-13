@@ -1,10 +1,14 @@
-from typing import TypeVar
-
 from ._base import _Base
+from .association import RolePermission, UserRole
+from .permission import Permission
+from .role import Role
 from .user import User
 
-table = TypeVar(
-    "table",
+__all__: tuple[str] = (
+    "Permission",
+    "Role",
+    "User",
+    "_Base",
+    "UserRole",
+    "RolePermission",
 )
-
-__all__: tuple[str] = ("User", "_Base", "table")
