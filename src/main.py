@@ -1,4 +1,4 @@
-import uvicorn
+from application.server import APIServer
 
 if __name__ == "__main__":
-    uvicorn.run("src.application.app:service_app")
+    APIServer.run_server()
