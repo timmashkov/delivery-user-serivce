@@ -5,6 +5,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 from infrastructure.database.models import User
 from presentation.models.patched_filter import PatchedFilter
+from .role import ReadRoleModel
 
 
 class CreateUserModel(BaseModel):
@@ -19,6 +20,7 @@ class ReadUserModel(CreateUserModel):
     uuid: UUID = Field(description=User.uuid.comment)
     created_at: datetime = Field(description=User.created_at.comment)
     updated_at: datetime = Field(description=User.updated_at.comment)
+    roles: list[ReadRoleModel] | None = Field(default_factory=list)
 
 
 class CreateRolesToUser(BaseModel):

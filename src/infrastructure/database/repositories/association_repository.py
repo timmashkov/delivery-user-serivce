@@ -1,3 +1,4 @@
+from typing import Iterable
 from uuid import UUID
 
 from sqlalchemy import delete, insert
@@ -14,7 +15,7 @@ class AssociationRepository:
 
     async def assign_roles_to_user(
         self, user_uuid: UUID, roles: list[dict[str, UUID | None]]
-    ) -> UserRole:
+    ) -> Iterable[UserRole]:
         async with self._session() as session:
             await session.execute(
                 delete(UserRole).where(UserRole.user_uuid == user_uuid)
@@ -22,4 +23,4 @@ class AssociationRepository:
             query = insert(UserRole).values(roles).returning(UserRole)
             query = await session.execute(query)
             await session.commit()
-        return query.scalar_one_or_none()
+        return query.unique().scalars().all()

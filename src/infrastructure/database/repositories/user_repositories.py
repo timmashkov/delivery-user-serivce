@@ -6,7 +6,7 @@ from sqlalchemy import delete, insert, select
 from sqlalchemy.orm import joinedload
 
 from infrastructure.database.database_gateway import DatabaseGateway
-from infrastructure.database.models import User, UserRole
+from infrastructure.database.models import User, UserRole, Role
 from infrastructure.database.repositories._base._base_read_repository import \
     _BaseReadRepository
 from infrastructure.database.repositories._base._base_write_repository import \
@@ -20,8 +20,8 @@ class UserReadRepository(_BaseReadRepository):
         self._query_modifier = self.__apply_user_joins
 
     @staticmethod
-    def __apply_user_joins(query: select) -> select:
-        return query.options(joinedload(User.roles))
+    def __apply_user_joins(query: type[select]) -> type[select]:
+        return query.options(joinedload(User.roles).joinedload(Role.permissions))
 
     async def get_user(self, user_uuid: UUID) -> User | None:
         return await self._get_object_by_uuid(user_uuid)
