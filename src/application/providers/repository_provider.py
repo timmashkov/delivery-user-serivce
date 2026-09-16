@@ -1,6 +1,7 @@
 from dishka import Provider, Scope, provide
 
-from infrastructure.database import (DatabaseGateway, PermissionReadRepository,
+from infrastructure.database import (AssociationRepository, DatabaseGateway,
+                                     PermissionReadRepository,
                                      PermissionWriteRepository,
                                      RoleReadRepository, RoleWriteRepository,
                                      UserReadRepository, UserWriteRepository)
@@ -42,3 +43,9 @@ class UserRepositoryProvider(Provider):
         self, database_adapter: DatabaseGateway
     ) -> PermissionWriteRepository:
         return PermissionWriteRepository(database_adapter)
+
+    @provide(scope=Scope.REQUEST)
+    def provide_association_repository(
+        self, database_adapter: DatabaseGateway
+    ) -> AssociationRepository:
+        return AssociationRepository(database_adapter)

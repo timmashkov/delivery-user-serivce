@@ -1,4 +1,5 @@
 from .database_gateway import DatabaseGateway
+from .repositories.association_repository import AssociationRepository
 from .repositories.permissions_repositories import (PermissionReadRepository,
                                                     PermissionWriteRepository)
 from .repositories.roles_repositories import (RoleReadRepository,
@@ -14,4 +15,5 @@ __all__: tuple[str] = (
     "PermissionWriteRepository",
     "RoleReadRepository",
     "RoleWriteRepository",
+    "AssociationRepository",
 )

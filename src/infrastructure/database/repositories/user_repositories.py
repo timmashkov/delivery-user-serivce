@@ -1,11 +1,12 @@
 from typing import Iterable
+from uuid import UUID
 
 from fastapi_filter.contrib.sqlalchemy import Filter
-from sqlalchemy import select
+from sqlalchemy import delete, insert, select
 from sqlalchemy.orm import joinedload
 
 from infrastructure.database.database_gateway import DatabaseGateway
-from infrastructure.database.models import User
+from infrastructure.database.models import User, UserRole, Role
 from infrastructure.database.repositories._base._base_read_repository import \
     _BaseReadRepository
 from infrastructure.database.repositories._base._base_write_repository import \
@@ -19,10 +20,10 @@ class UserReadRepository(_BaseReadRepository):
         self._query_modifier = self.__apply_user_joins
 
     @staticmethod
-    def __apply_user_joins(query: select) -> select:
-        return query.options(joinedload(User.roles))
+    def __apply_user_joins(query: type[select]) -> type[select]:
+        return query.options(joinedload(User.roles).joinedload(Role.permissions))
 
-    async def get_user(self, user_uuid) -> User | None:
+    async def get_user(self, user_uuid: UUID) -> User | None:
         return await self._get_object_by_uuid(user_uuid)
 
     async def get_users(self, filters: Filter | None = None) -> Iterable[User]:
@@ -40,5 +41,5 @@ class UserWriteRepository(_BaseWriteRepository):
     async def update_user(self, **kwargs) -> User | None:
         return await self._update_object(**kwargs)
 
-    async def delete_user(self, user_uuid) -> User | None:
+    async def delete_user(self, user_uuid: UUID) -> User | None:
         return await self._delete_object(user_uuid)

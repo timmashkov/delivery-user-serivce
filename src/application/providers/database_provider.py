@@ -1,18 +1,20 @@
 from dishka import Provider, Scope, provide
 
-from application.config import settings
+from application.config import Settings
 from infrastructure.database import DatabaseGateway
 
 
 class DatabaseProvider(Provider):
+    scope = Scope.APP
+
     @provide(scope=Scope.APP)
-    def provide_database(self) -> DatabaseGateway:
+    def provide_database(self, settings: Settings) -> DatabaseGateway:
         return DatabaseGateway(
-            host=settings.POSTGRES.host,
-            port=settings.POSTGRES.port,
-            dialect=settings.POSTGRES.dialect,
-            login=settings.POSTGRES.login,
-            password=settings.POSTGRES.password,
-            database=settings.POSTGRES.database,
-            echo=settings.POSTGRES.echo,
+            host=settings.postgres_host,
+            port=settings.postgres_port,
+            dialect=settings.postgres_dialect,
+            login=settings.postgres_login,
+            password=settings.postgres_password,
+            database=settings.postgres_database,
+            echo=settings.postgres_echo,
         )

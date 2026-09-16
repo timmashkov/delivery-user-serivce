@@ -2,7 +2,8 @@ from dishka import Provider, Scope, provide
 
 from application.use_cases import (PermissionUseCases, RoleUseCases,
                                    UserUseCases)
-from infrastructure.database import (PermissionReadRepository,
+from infrastructure.database import (AssociationRepository,
+                                     PermissionReadRepository,
                                      PermissionWriteRepository,
                                      RoleReadRepository, RoleWriteRepository,
                                      UserReadRepository, UserWriteRepository)
@@ -11,9 +12,12 @@ from infrastructure.database import (PermissionReadRepository,
 class UseCaseProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def provide_user_use_cases(
-        self, read_repository: UserReadRepository, write_repository: UserWriteRepository
+        self,
+        read_repository: UserReadRepository,
+        write_repository: UserWriteRepository,
+        association_repository: AssociationRepository,
     ) -> UserUseCases:
-        return UserUseCases(read_repository, write_repository)
+        return UserUseCases(read_repository, write_repository, association_repository)
 
     @provide(scope=Scope.REQUEST)
     def provide_perm_use_cases(
