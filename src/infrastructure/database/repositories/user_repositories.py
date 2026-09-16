@@ -1,4 +1,5 @@
 from typing import Iterable
+
 from fastapi_filter.contrib.sqlalchemy import Filter
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload

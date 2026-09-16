@@ -19,7 +19,10 @@ async def read_user(user_uuid: UUID, user_provider: FromDishka[UserUseCases]):
 
 @user_router.get("/", response_model=list[ReadUserModel])
 @inject
-async def read_users(user_provider: FromDishka[UserUseCases], user_filters: UserFilter = FilterDepends(UserFilter)):
+async def read_users(
+    user_provider: FromDishka[UserUseCases],
+    user_filters: UserFilter = FilterDepends(UserFilter),
+):
     return await user_provider.get_users_list(user_filters)
 
 

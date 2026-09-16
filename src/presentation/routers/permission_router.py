@@ -3,9 +3,11 @@ from uuid import UUID
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 from fastapi import APIRouter
+from fastapi_filter import FilterDepends
 
 from application.use_cases import PermissionUseCases
-from presentation.models import CreatePermissionModel, ReadPermissionModel
+from presentation.models import (CreatePermissionModel, PermissionFilter,
+                                 ReadPermissionModel)
 
 perm_router = APIRouter(prefix="/permission", tags=["Permissions"])
 
@@ -20,8 +22,11 @@ async def read_permission(
 
 @perm_router.get("/", response_model=list[ReadPermissionModel])
 @inject
-async def read_permissions(perm_provider: FromDishka[PermissionUseCases]):
-    return await perm_provider.get_permissions_list()
+async def read_permissions(
+    perm_provider: FromDishka[PermissionUseCases],
+    perm_filters: PermissionFilter = FilterDepends(PermissionFilter),
+):
+    return await perm_provider.get_permissions_list(perm_filters)
 
 
 @perm_router.post("/", response_model=ReadPermissionModel)

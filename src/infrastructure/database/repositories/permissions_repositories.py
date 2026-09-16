@@ -1,5 +1,7 @@
 from typing import Iterable
 
+from fastapi_filter.contrib.sqlalchemy import Filter
+
 from infrastructure.database.database_gateway import DatabaseGateway
 from infrastructure.database.models import Permission
 from infrastructure.database.repositories._base._base_read_repository import \
@@ -16,8 +18,10 @@ class PermissionReadRepository(_BaseReadRepository):
     async def get_permission(self, permission_uuid) -> Permission | None:
         return await self._get_object_by_uuid(permission_uuid)
 
-    async def get_permissions(self) -> Iterable[Permission]:
-        return await self._get_all_objects()
+    async def get_permissions(
+        self, filters: Filter | None = None
+    ) -> Iterable[Permission]:
+        return await self._get_all_objects(filters)
 
 
 class PermissionWriteRepository(_BaseWriteRepository):

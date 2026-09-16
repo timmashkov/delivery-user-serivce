@@ -1,5 +1,7 @@
 from typing import Iterable
 
+from fastapi_filter.contrib.sqlalchemy import Filter
+
 from infrastructure.database.database_gateway import DatabaseGateway
 from infrastructure.database.models import Role
 from infrastructure.database.repositories._base._base_read_repository import \
@@ -16,8 +18,8 @@ class RoleReadRepository(_BaseReadRepository):
     async def get_role(self, role_uuid) -> Role | None:
         return await self._get_object_by_uuid(role_uuid)
 
-    async def get_roles(self) -> Iterable[Role]:
-        return await self._get_all_objects()
+    async def get_roles(self, filters: Filter | None = None) -> Iterable[Role]:
+        return await self._get_all_objects(filters)
 
 
 class RoleWriteRepository(_BaseWriteRepository):

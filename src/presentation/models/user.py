@@ -8,7 +8,7 @@ from presentation.models.patched_filter import PatchedFilter
 
 
 class CreateUserModel(BaseModel):
-    username:  str = Field(description=User.username.comment)
+    username: str = Field(description=User.username.comment)
     age: int = Field(description=User.age.comment)
     email: EmailStr = Field(description=User.email.comment)
     phone_number: str = Field(description=User.phone_number.comment)
@@ -23,9 +23,9 @@ class ReadUserModel(CreateUserModel):
 
 class UserFilter(PatchedFilter):
     uuid: UUID | None = None
-    first_name: str | None = None
-    last_name: str | None = None
-    patronymic: str | None = None
+    username: str | None = None
+    age: int | None = None
+    phone_number: str | None = None
     email: EmailStr | None = None
 
     class Constants(PatchedFilter.Constants):

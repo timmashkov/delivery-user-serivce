@@ -1,5 +1,7 @@
 from uuid import UUID
+
 from fastapi_filter.contrib.sqlalchemy import Filter
+
 from infrastructure.database import UserReadRepository, UserWriteRepository
 
 

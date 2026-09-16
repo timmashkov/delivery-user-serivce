@@ -5,10 +5,12 @@ Revises: 71e4e233d45e
 Create Date: 2026-09-15 19:32:00
 
 """
-from alembic import op
-import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+
 import uuid
+
+import sqlalchemy as sa
+from alembic import op
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 
 revision = "a1b2c3d4e5f6"
 down_revision = "71e4e233d45e"
@@ -25,11 +27,11 @@ def upgrade() -> None:
 
     # --- Роли ---
     roles_data = [
-        {"uuid": uuid.uuid4(), "name": "user",         "data": {}},
+        {"uuid": uuid.uuid4(), "name": "user", "data": {}},
         {"uuid": uuid.uuid4(), "name": "advanced_user", "data": {}},
-        {"uuid": uuid.uuid4(), "name": "superuser",     "data": {}},
-        {"uuid": uuid.uuid4(), "name": "watcher",       "data": {}},
-        {"uuid": uuid.uuid4(), "name": "admin",         "data": {}},
+        {"uuid": uuid.uuid4(), "name": "superuser", "data": {}},
+        {"uuid": uuid.uuid4(), "name": "watcher", "data": {}},
+        {"uuid": uuid.uuid4(), "name": "admin", "data": {}},
     ]
     op.bulk_insert(
         sa.table(
@@ -44,7 +46,7 @@ def upgrade() -> None:
     # --- Пермишены ---
     permissions_data = [
         {"uuid": uuid.uuid4(), "name": "watch", "layer": "backend", "data": {}},
-        {"uuid": uuid.uuid4(), "name": "edit",  "layer": "backend", "data": {}},
+        {"uuid": uuid.uuid4(), "name": "edit", "layer": "backend", "data": {}},
         {"uuid": uuid.uuid4(), "name": "admin", "layer": "backend", "data": {}},
     ]
     op.bulk_insert(
@@ -70,11 +72,11 @@ def upgrade() -> None:
     perm_map = {row.name: row.uuid for row in perm_rows}
 
     role_permissions = {
-        "user":          ["watch"],
+        "user": ["watch"],
         "advanced_user": ["watch", "edit"],
-        "watcher":       ["watch"],
-        "superuser":     ["watch", "edit", "admin"],
-        "admin":         ["watch", "edit", "admin"],
+        "watcher": ["watch"],
+        "superuser": ["watch", "edit", "admin"],
+        "admin": ["watch", "edit", "admin"],
     }
 
     rp_rows = [
@@ -104,8 +106,7 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.execute(f"DELETE FROM {ROLE_PERMISSIONS_TABLE}")
     op.execute(
-        f"DELETE FROM {PERMISSIONS_TABLE} "
-        f"WHERE name IN ('watch', 'edit', 'admin')"
+        f"DELETE FROM {PERMISSIONS_TABLE} " f"WHERE name IN ('watch', 'edit', 'admin')"
     )
     op.execute(
         f"DELETE FROM {ROLES_TABLE} "

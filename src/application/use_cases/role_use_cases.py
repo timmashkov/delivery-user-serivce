@@ -1,5 +1,7 @@
 from uuid import UUID
 
+from fastapi_filter.contrib.sqlalchemy import Filter
+
 from infrastructure.database import RoleReadRepository, RoleWriteRepository
 
 
@@ -10,8 +12,8 @@ class RoleUseCases:
         self.read_repository = read_repository
         self.write_repository = write_repository
 
-    async def get_roles_list(self) -> list:
-        roles_list = await self.read_repository.get_roles()
+    async def get_roles_list(self, filters: Filter) -> list:
+        roles_list = await self.read_repository.get_roles(filters)
         return [role for role in roles_list]
 
     async def read_single_role(self, role_uuid: UUID):

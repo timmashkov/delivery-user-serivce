@@ -4,8 +4,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-from presentation.models.patched_filter import PatchedFilter
 from infrastructure.database.models import Permission
+from presentation.models.patched_filter import PatchedFilter
 
 
 class CreatePermissionModel(BaseModel):
