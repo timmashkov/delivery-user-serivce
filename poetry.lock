@@ -291,6 +291,28 @@ standard = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.32)", "fa
 standard-no-fastapi-cloud-cli = ["email-validator (>=2.0.0)", "fastapi-cli[standard-no-fastapi-cloud-cli] (>=0.0.32)", "httpx (>=0.23.0,<1.0.0)", "jinja2 (>=3.1.5)", "pydantic-extra-types (>=2.0.0)", "pydantic-settings (>=2.0.0)", "python-multipart (>=0.0.18)", "uvicorn[standard] (>=0.12.0)"]
 
 [[package]]
+name = "fastapi-filter"
+version = "3.0.0"
+description = "FastAPI filter"
+optional = false
+python-versions = "<4.0,>=3.10"
+groups = ["main"]
+files = [
+    {file = "fastapi_filter-3.0.0-py3-none-any.whl", hash = "sha256:0b4f39ba94b51134d441cdac61d1d7f6a86e51cb662c4aa47854b5db7bfdd5c5"},
+    {file = "fastapi_filter-3.0.0.tar.gz", hash = "sha256:afdea1347c9bb61d7c1102d5ee1f5308810bfa7e08aa8d7f3cc3f3d258e24507"},
+]
+
+[package.dependencies]
+fastapi = ">=0.115.0,<1.0"
+pydantic = ">=2.12.0,<3.0.0"
+
+[package.extras]
+all = ["SQLAlchemy (>=2.0.0,<2.1.0)", "beanie (>=2.0.0,<3.0.0)", "mongoengine (>=0.28.0,<0.30.0)"]
+beanie = ["beanie (>=2.0.0,<3.0.0)"]
+mongoengine = ["mongoengine (>=0.28.0,<0.30.0)"]
+sqlalchemy = ["SQLAlchemy (>=2.0.0,<2.1.0)"]
+
+[[package]]
 name = "flake8"
 version = "7.3.0"
 description = "the modular source code checker: pep8 pyflakes and co"
@@ -1058,4 +1080,4 @@ standard = ["httptools (>=0.8.0)", "python-dotenv (>=0.13)", "pyyaml (>=5.1)", "
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "6178f5b3fb489adb89d974cc252bc5795d5f2fc4bf05cb77a12a2bb4eb6b1d9e"
+content-hash = "330b6ebb8b6f4f2e534db87c3e444826a2c6e8c77ea936ebdb6332bcb046b9c4"

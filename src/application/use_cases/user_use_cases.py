@@ -1,5 +1,5 @@
 from uuid import UUID
-
+from fastapi_filter.contrib.sqlalchemy import Filter
 from infrastructure.database import UserReadRepository, UserWriteRepository
 
 
@@ -10,8 +10,8 @@ class UserUseCases:
         self.read_repository = read_repository
         self.write_repository = write_repository
 
-    async def get_users_list(self) -> list:
-        users_list = await self.read_repository.get_users()
+    async def get_users_list(self, filters: Filter) -> list:
+        users_list = await self.read_repository.get_users(filters)
         return [user for user in users_list]
 
     async def read_single_user(self, user_uuid: UUID):

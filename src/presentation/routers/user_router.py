@@ -3,9 +3,10 @@ from uuid import UUID
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 from fastapi import APIRouter
+from fastapi_filter import FilterDepends
 
 from application.use_cases import UserUseCases
-from presentation.models import CreateUserModel, ReadUserModel
+from presentation.models import CreateUserModel, ReadUserModel, UserFilter
 
 user_router = APIRouter(prefix="/user", tags=["Users"])
 
@@ -18,8 +19,8 @@ async def read_user(user_uuid: UUID, user_provider: FromDishka[UserUseCases]):
 
 @user_router.get("/", response_model=list[ReadUserModel])
 @inject
-async def read_users(user_provider: FromDishka[UserUseCases]):
-    return await user_provider.get_users_list()
+async def read_users(user_provider: FromDishka[UserUseCases], user_filters: UserFilter = FilterDepends(UserFilter)):
+    return await user_provider.get_users_list(user_filters)
 
 
 @user_router.post("/", response_model=ReadUserModel)
