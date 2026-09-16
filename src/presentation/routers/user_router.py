@@ -6,7 +6,8 @@ from fastapi import APIRouter
 from fastapi_filter import FilterDepends
 
 from application.use_cases import UserUseCases
-from presentation.models import CreateUserModel, ReadUserModel, UserFilter, CreateRolesToUser
+from presentation.models import (CreateRolesToUser, CreateUserModel,
+                                 ReadUserModel, UserFilter)
 
 user_router = APIRouter(prefix="/user", tags=["Users"])
 

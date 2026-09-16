@@ -2,16 +2,21 @@ from uuid import UUID
 
 from fastapi_filter.contrib.sqlalchemy import Filter
 
-from domain.user import UserDomainModel, WrongPhoneNumberException
-from infrastructure.database import UserReadRepository, UserWriteRepository
+from domain.user import UserDomainModel
+from infrastructure.database import (AssociationRepository, UserReadRepository,
+                                     UserWriteRepository)
 
 
 class UserUseCases:
     def __init__(
-        self, read_repository: UserReadRepository, write_repository: UserWriteRepository
+        self,
+        read_repository: UserReadRepository,
+        write_repository: UserWriteRepository,
+        association_repository: AssociationRepository,
     ) -> None:
         self.read_repository = read_repository
         self.write_repository = write_repository
+        self.association_repository = association_repository
 
     async def get_users_list(self, filters: Filter) -> list:
         users_list = await self.read_repository.get_users(filters)
@@ -28,8 +33,12 @@ class UserUseCases:
 
     async def add_roles_to_user(self, **kwargs):
         user_uuid, role_uuids = kwargs.get("user_uuid"), kwargs.get("role_uuids")
-        new_roles = [{"user_uuid": user_uuid, "role_uuid": role_uuid} for role_uuid in role_uuids]
-        return await self.write_repository.assign_roles(user_uuid, new_roles)
+        new_roles = [
+            {"user_uuid": user_uuid, "role_uuid": role_uuid} for role_uuid in role_uuids
+        ]
+        return await self.association_repository.assign_roles_to_user(
+            user_uuid, new_roles
+        )
 
     async def update_user(self, **kwargs):
         uuid = kwargs.pop("user_uuid")

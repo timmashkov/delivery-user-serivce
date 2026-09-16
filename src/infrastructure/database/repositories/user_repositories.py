@@ -2,7 +2,7 @@ from typing import Iterable
 from uuid import UUID
 
 from fastapi_filter.contrib.sqlalchemy import Filter
-from sqlalchemy import select, insert, delete
+from sqlalchemy import delete, insert, select
 from sqlalchemy.orm import joinedload
 
 from infrastructure.database.database_gateway import DatabaseGateway
@@ -43,13 +43,3 @@ class UserWriteRepository(_BaseWriteRepository):
 
     async def delete_user(self, user_uuid: UUID) -> User | None:
         return await self._delete_object(user_uuid)
-
-    async def assign_roles(self, user_uuid: UUID, roles: list[dict[str, UUID | None]]):
-        async with self._session() as session:
-            await session.execute(
-                delete(UserRole).where(UserRole.user_uuid == user_uuid)
-            )
-            query = insert(UserRole).values(roles).returning(UserRole)
-            query = await session.execute(query)
-            await session.commit()
-        return query.scalar_one_or_none()

@@ -1,11 +1,10 @@
-from dataclasses import dataclass, asdict
 import re
+from dataclasses import asdict, dataclass
 from enum import StrEnum
 from typing import Any
 
-from pydantic import EmailStr
-
-from domain.user.exceptions import WrongPhoneNumberException, UnknownAgeException
+from domain.user.exceptions import (UnknownAgeException,
+                                    WrongPhoneNumberException)
 
 
 class AgeEnum(StrEnum):
@@ -19,13 +18,13 @@ class AgeEnum(StrEnum):
 class UserDomainModel:
     username: str
     age: int
-    email: EmailStr
+    email: str
     phone_number: str
     data: dict | None
 
     @property
     def _prone_number_regex(self) -> str:
-        return r'^\+?[78]\d{3} ?\d{3} ?\d{2} ?\d{2}$'
+        return r"^\+?[78]\d{3} ?\d{3} ?\d{2} ?\d{2}$"
 
     def _check_phone_number(self) -> bool:
         return re.match(self._prone_number_regex, self.phone_number) is not None
@@ -48,7 +47,7 @@ class UserDomainModel:
     def verify_age(self) -> str | None:
         user_age = self._check_age()
         if user_age == AgeEnum.UNKNOWN:
-            raise  UnknownAgeException(self.age)
+            raise UnknownAgeException(self.age)
         return self._check_age()
 
     def to_dict(self) -> dict[str, Any]:
