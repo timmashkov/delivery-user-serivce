@@ -1,6 +1,6 @@
 [project]
 name = "delivery_user_service"
-version = "0.0.4"
+version = "0.0.5"
 description = ""
 authors = [
     {name = "t.mashkov"}

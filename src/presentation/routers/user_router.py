@@ -6,7 +6,7 @@ from fastapi import APIRouter
 from fastapi_filter import FilterDepends
 
 from application.use_cases import UserUseCases
-from presentation.models import CreateUserModel, ReadUserModel, UserFilter
+from presentation.models import CreateUserModel, ReadUserModel, UserFilter, CreateRolesToUser
 
 user_router = APIRouter(prefix="/user", tags=["Users"])
 
@@ -32,6 +32,14 @@ async def create_user(
     user_data: CreateUserModel, user_provider: FromDishka[UserUseCases]
 ):
     return await user_provider.create_new_user(**user_data.model_dump())
+
+
+@user_router.post("/{user_uuid}/roles", response_model=None)
+@inject
+async def assign_role_to_user(
+    data: CreateRolesToUser, user_provider: FromDishka[UserUseCases]
+):
+    return await user_provider.add_roles_to_user(**data.model_dump())
 
 
 @user_router.patch("/{user_uuid}", response_model=ReadUserModel)

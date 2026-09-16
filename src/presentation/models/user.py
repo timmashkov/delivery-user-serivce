@@ -21,6 +21,11 @@ class ReadUserModel(CreateUserModel):
     updated_at: datetime = Field(description=User.updated_at.comment)
 
 
+class CreateRolesToUser(BaseModel):
+    user_uuid: UUID = Field(description=User.uuid.comment)
+    role_uuids: list[UUID] = Field(default_factory=list, description=User.uuid.comment)
+
+
 class UserFilter(PatchedFilter):
     uuid: UUID | None = None
     username: str | None = None

@@ -2,6 +2,7 @@ from uuid import UUID
 
 from fastapi_filter.contrib.sqlalchemy import Filter
 
+from domain.user import UserDomainModel, WrongPhoneNumberException
 from infrastructure.database import UserReadRepository, UserWriteRepository
 
 
@@ -20,7 +21,15 @@ class UserUseCases:
         return await self.read_repository.get_user(user_uuid)
 
     async def create_new_user(self, **kwargs):
-        return await self.write_repository.create_user(**kwargs)
+        new_user = UserDomainModel(**kwargs)
+        new_user.verify_phone_number()
+        new_user.verify_age()
+        return await self.write_repository.create_user(**new_user.to_dict())
+
+    async def add_roles_to_user(self, **kwargs):
+        user_uuid, role_uuids = kwargs.get("user_uuid"), kwargs.get("role_uuids")
+        new_roles = [{"user_uuid": user_uuid, "role_uuid": role_uuid} for role_uuid in role_uuids]
+        return await self.write_repository.assign_roles(user_uuid, new_roles)
 
     async def update_user(self, **kwargs):
         uuid = kwargs.pop("user_uuid")
