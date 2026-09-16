@@ -1,5 +1,7 @@
 from uuid import UUID
 
+from fastapi_filter.contrib.sqlalchemy import Filter
+
 from infrastructure.database import (PermissionReadRepository,
                                      PermissionWriteRepository)
 
@@ -13,8 +15,8 @@ class PermissionUseCases:
         self.read_repository = read_repository
         self.write_repository = write_repository
 
-    async def get_permissions_list(self) -> list:
-        permissions_list = await self.read_repository.get_permissions()
+    async def get_permissions_list(self, filters: Filter) -> list:
+        permissions_list = await self.read_repository.get_permissions(filters)
         return [permission for permission in permissions_list]
 
     async def read_single_permission(self, permission_uuid: UUID):

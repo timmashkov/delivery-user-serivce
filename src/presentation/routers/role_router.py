@@ -3,9 +3,10 @@ from uuid import UUID
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 from fastapi import APIRouter
+from fastapi_filter import FilterDepends
 
 from application.use_cases import RoleUseCases
-from presentation.models import CreateRoleModel, ReadRoleModel
+from presentation.models import CreateRoleModel, ReadRoleModel, RoleFilter
 
 role_router = APIRouter(prefix="/role", tags=["Roles"])
 
@@ -18,8 +19,11 @@ async def read_role(role_uuid: UUID, role_provider: FromDishka[RoleUseCases]):
 
 @role_router.get("/", response_model=list[ReadRoleModel])
 @inject
-async def read_roles(role_provider: FromDishka[RoleUseCases]):
-    return await role_provider.get_roles_list()
+async def read_roles(
+    role_provider: FromDishka[RoleUseCases],
+    role_filters: RoleFilter = FilterDepends(RoleFilter),
+):
+    return await role_provider.get_roles_list(role_filters)
 
 
 @role_router.post("/", response_model=ReadRoleModel)

@@ -1,5 +1,9 @@
 from typing import Iterable
 
+from fastapi_filter.contrib.sqlalchemy import Filter
+from sqlalchemy import select
+from sqlalchemy.orm import joinedload
+
 from infrastructure.database.database_gateway import DatabaseGateway
 from infrastructure.database.models import User
 from infrastructure.database.repositories._base._base_read_repository import \
@@ -12,12 +16,17 @@ class UserReadRepository(_BaseReadRepository):
     def __init__(self, database_gateway: DatabaseGateway) -> None:
         self._session = database_gateway.autocommit_session
         self._model: type[User] = User
+        self._query_modifier = self.__apply_user_joins
+
+    @staticmethod
+    def __apply_user_joins(query: select) -> select:
+        return query.options(joinedload(User.roles))
 
     async def get_user(self, user_uuid) -> User | None:
         return await self._get_object_by_uuid(user_uuid)
 
-    async def get_users(self) -> Iterable[User]:
-        return await self._get_all_objects()
+    async def get_users(self, filters: Filter | None = None) -> Iterable[User]:
+        return await self._get_all_objects(filters)
 
 
 class UserWriteRepository(_BaseWriteRepository):
