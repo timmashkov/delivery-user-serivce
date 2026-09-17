@@ -3,6 +3,7 @@ from .association import RolePermission, UserRole
 from .permission import Permission
 from .role import Role
 from .user import User
+from .outbox import Outbox
 
 __all__: tuple[str] = (
     "Permission",
@@ -11,4 +12,5 @@ __all__: tuple[str] = (
     "_Base",
     "UserRole",
     "RolePermission",
+    "Outbox",
 )

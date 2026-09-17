@@ -4,12 +4,13 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from infrastructure.database.models import _Base
+from infrastructure.database.models._mixins import UUIDTableMixin, CreatedAtTableMixin, UpdatedAtTableMixin
 
 if TYPE_CHECKING:
     from infrastructure.database.models.role import Role
 
 
-class User(_Base):
+class User(_Base, UUIDTableMixin, CreatedAtTableMixin, UpdatedAtTableMixin):
 
     username: Mapped[str] = mapped_column(
         String,

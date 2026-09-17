@@ -10,17 +10,19 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 sys.path.append(os.path.join(sys.path[0], "src"))
 
-from application.config import settings
+from application.config import Settings
 from infrastructure.database.models import _Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
+settings = Settings()
+
 config.set_main_option(
     "sqlalchemy.url",
-    f"postgresql+{settings.POSTGRES.dialect}://{settings.POSTGRES.login}:{settings.POSTGRES.password}@"
-    f"{settings.POSTGRES.host}:{settings.POSTGRES.port}/{settings.POSTGRES.database}",
+    f"postgresql+{settings.postgres_dialect}://{settings.postgres_login}:{settings.postgres_password}@"
+    f"{settings.postgres_host}:{settings.postgres_port}/{settings.postgres_database}",
 )
 
 # Interpret the config file for Python logging.
