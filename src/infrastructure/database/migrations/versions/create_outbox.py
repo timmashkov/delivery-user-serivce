@@ -1,8 +1,8 @@
 """create_outbox
 
-Revision ID: 9a8360554fa3
+Revision ID: b5f6fb892956
 Revises: a1b2c3d4e5f6
-Create Date: 2026-09-17 21:05:38.886117
+Create Date: 2026-09-17 21:20:49.288603
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "9a8360554fa3"
+revision: str = "b5f6fb892956"
 down_revision: Union[str, Sequence[str], None] = "a1b2c3d4e5f6"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -71,7 +71,7 @@ def upgrade() -> None:
         op.f("ix_outboxs_entity_id"), "outboxs", ["entity_id"], unique=False
     )
     op.create_index(
-        op.f("ix_outboxs_event_type"), "outboxs", ["event_type"], unique=True
+        op.f("ix_outboxs_event_type"), "outboxs", ["event_type"], unique=False
     )
     op.create_index(op.f("ix_outboxs_uuid"), "outboxs", ["uuid"], unique=False)
     # ### end Alembic commands ###
@@ -83,5 +83,6 @@ def downgrade() -> None:
     op.drop_index(op.f("ix_outboxs_uuid"), table_name="outboxs")
     op.drop_index(op.f("ix_outboxs_event_type"), table_name="outboxs")
     op.drop_index(op.f("ix_outboxs_entity_id"), table_name="outboxs")
+    op.execute('DROP TYPE IF EXISTS event_status_enum CASCADE')
     op.drop_table("outboxs")
     # ### end Alembic commands ###

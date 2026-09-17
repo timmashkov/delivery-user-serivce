@@ -7,11 +7,11 @@ from infrastructure.database import User, UnitOfWork, user_query_modifier, Repos
 
 
 class UserUseCases(RepositoryMixin):
-    def __init__(self, unit_of_work: UnitOfWork, association_provider: AssociationRepository) -> None:
+    def __init__(self, unit_of_work: UnitOfWork) -> None:
         self._unit_of_work = unit_of_work
         self._model = User
         self._query_modifier = user_query_modifier
-        self._association_provider = association_provider
+        self._custom_repository = AssociationRepository
 
     async def get_users_list(self, filters: Filter) -> list:
         async with self.read_repository() as read_repository:
@@ -30,7 +30,8 @@ class UserUseCases(RepositoryMixin):
     async def add_roles_to_user(self, **kwargs):
         user_uuid, role_uuids = kwargs.get("user_uuid"), kwargs.get("role_uuids")
         new_roles = [{"user_uuid": user_uuid, "role_uuid": role_uuid} for role_uuid in role_uuids]
-        return await self._association_provider.assign_roles_to_user(user_uuid, new_roles)
+        async with self.custom_repository() as custom_repository:
+            return await custom_repository.assign_roles_to_user(user_uuid, new_roles)
 
     async def update_user(self, **kwargs):
         uuid = kwargs.pop("user_uuid")

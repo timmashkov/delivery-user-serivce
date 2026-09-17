@@ -11,7 +11,7 @@ from infrastructure.database.models._mixins import UUIDTableMixin, CreatedAtTabl
 class Outbox(_Base, UUIDTableMixin, CreatedAtTableMixin):
     event_type: Mapped[str] = mapped_column(
         String,
-        unique=True,
+        unique=False,
         index=True,
         comment="Тип события",
     )

@@ -1,7 +1,7 @@
 from dishka import Provider, Scope, provide
 
 from application.use_cases import PermissionUseCases, RoleUseCases, UserUseCases
-from infrastructure.database import UnitOfWork, AssociationRepository
+from infrastructure.database import UnitOfWork
 
 
 class UseCaseProvider(Provider):
@@ -9,9 +9,8 @@ class UseCaseProvider(Provider):
     def provide_user_use_cases(
             self,
             unit_of_work: UnitOfWork,
-            association_provider: AssociationRepository,
     ) -> UserUseCases:
-        return UserUseCases(unit_of_work, association_provider)
+        return UserUseCases(unit_of_work)
 
     @provide(scope=Scope.REQUEST)
     def provide_perm_use_cases(self, unit_of_work: UnitOfWork) -> PermissionUseCases:

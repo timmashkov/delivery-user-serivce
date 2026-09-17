@@ -4,7 +4,7 @@ from typing import Self
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from infrastructure.database.database_gateway import DatabaseGateway
-from .repositories.repository_factory import RepositoryFactory
+from infrastructure.database.repository_factory import RepositoryFactory
 
 
 class UnitOfWork:

@@ -1,5 +1,6 @@
 import re
 from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
 from enum import StrEnum
 from typing import Any
 from uuid import UUID, uuid4
@@ -27,6 +28,7 @@ class UserDomainModel:
         self.verify_phone_number()
         self.age_category: str = self.verify_age()
         self.uuid: UUID = uuid4()
+        self.created_at = datetime.now(timezone.utc)
 
     def _check_phone_number(self) -> bool:
         is_valid = re.match(r"^\+?[78]\d{3} ?\d{3} ?\d{2} ?\d{2}$", self.phone_number)
