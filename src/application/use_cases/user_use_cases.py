@@ -27,9 +27,10 @@ class UserUseCases:
 
     async def create_new_user(self, **kwargs):
         new_user = UserDomainModel(**kwargs)
-        new_user.verify_phone_number()
-        new_user.verify_age()
-        return await self.write_repository.create_user(**new_user.to_dict())
+        print(new_user.uuid, 666)
+        user = await self.write_repository.create_user(**new_user.to_dict())
+        print(user.uuid, 777)
+        return user
 
     async def add_roles_to_user(self, **kwargs):
         user_uuid, role_uuids = kwargs.get("user_uuid"), kwargs.get("role_uuids")

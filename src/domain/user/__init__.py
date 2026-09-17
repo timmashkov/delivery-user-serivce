@@ -1,9 +1,9 @@
 from .exceptions import UnknownAgeException, WrongPhoneNumberException
-from .model import AgeEnum, UserDomainModel
+from .model import AgeCategoryEnum, UserDomainModel
 
 __all__: tuple[str] = (
     "UserDomainModel",
-    "AgeEnum",
+    "AgeCategoryEnum",
     "UnknownAgeException",
     "WrongPhoneNumberException",
 )
