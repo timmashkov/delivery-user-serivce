@@ -37,14 +37,8 @@ class DatabaseGateway:
             echo=self.echo,
             **self.pool_config,
         )
-        self._autocommit_session = self._engine.execution_options(
-            isolation_level="AUTOCOMMIT",
-        )
-        self._transactional_session = async_sessionmaker(
-            bind=self._engine,
-            expire_on_commit=False,
-        )
-        self._autocommit_session = async_sessionmaker(self._autocommit_session)
+
+        self._session = async_sessionmaker(bind=self._engine, expire_on_commit=False)
 
     @property
     def _db_url(self) -> str:
@@ -61,9 +55,8 @@ class DatabaseGateway:
         }
 
     @property
-    def transactional_session(self) -> async_sessionmaker[AsyncSession]:
-        return self._transactional_session
+    def session(self) -> async_sessionmaker[AsyncSession]:
+        return self._session
 
-    @property
-    def autocommit_session(self) -> async_sessionmaker[AsyncSession]:
-        return self._autocommit_session
+    async def close(self) -> None:
+        await self._engine.dispose()

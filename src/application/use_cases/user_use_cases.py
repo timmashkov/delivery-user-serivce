@@ -3,46 +3,40 @@ from uuid import UUID
 from fastapi_filter.contrib.sqlalchemy import Filter
 
 from domain.user import UserDomainModel
-from infrastructure.database import (AssociationRepository, UserReadRepository,
-                                     UserWriteRepository)
+from infrastructure.database import User, UnitOfWork, user_query_modifier, RepositoryMixin, AssociationRepository
 
 
-class UserUseCases:
-    def __init__(
-        self,
-        read_repository: UserReadRepository,
-        write_repository: UserWriteRepository,
-        association_repository: AssociationRepository,
-    ) -> None:
-        self.read_repository = read_repository
-        self.write_repository = write_repository
-        self.association_repository = association_repository
+class UserUseCases(RepositoryMixin):
+    def __init__(self, unit_of_work: UnitOfWork, association_provider: AssociationRepository) -> None:
+        self._unit_of_work = unit_of_work
+        self._model = User
+        self._query_modifier = user_query_modifier
+        self._association_provider = association_provider
 
     async def get_users_list(self, filters: Filter) -> list:
-        users_list = await self.read_repository.get_users(filters)
+        async with self.read_repository() as read_repository:
+            users_list = await read_repository.get_all_objects(filters)
         return [user for user in users_list]
 
     async def read_single_user(self, user_uuid: UUID):
-        return await self.read_repository.get_user(user_uuid)
+        async with self.read_repository() as read_repository:
+            return await read_repository.get_object_by_uuid(user_uuid)
 
     async def create_new_user(self, **kwargs):
         new_user = UserDomainModel(**kwargs)
-        new_user.verify_phone_number()
-        new_user.verify_age()
-        return await self.write_repository.create_user(**new_user.to_dict())
+        async with self.write_repository() as write_repository:
+            return await write_repository.create_object(**new_user.to_dict())
 
     async def add_roles_to_user(self, **kwargs):
         user_uuid, role_uuids = kwargs.get("user_uuid"), kwargs.get("role_uuids")
-        new_roles = [
-            {"user_uuid": user_uuid, "role_uuid": role_uuid} for role_uuid in role_uuids
-        ]
-        return await self.association_repository.assign_roles_to_user(
-            user_uuid, new_roles
-        )
+        new_roles = [{"user_uuid": user_uuid, "role_uuid": role_uuid} for role_uuid in role_uuids]
+        return await self._association_provider.assign_roles_to_user(user_uuid, new_roles)
 
     async def update_user(self, **kwargs):
         uuid = kwargs.pop("user_uuid")
-        return await self.write_repository.update_user(**kwargs, uuid=uuid)
+        async with self.write_repository() as write_repository:
+            return await write_repository.update_object(**kwargs, uuid=uuid)
 
     async def delete_user(self, user_uuid: UUID):
-        return await self.write_repository.delete_user(user_uuid)
+        async with self.write_repository() as write_repository:
+            return await write_repository.delete_object(user_uuid)

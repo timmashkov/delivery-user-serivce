@@ -4,9 +4,10 @@ from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from infrastructure.database.models._base import _Base
+from infrastructure.database.models._mixins import UUIDTableMixin, CreatedAtTableMixin, UpdatedAtTableMixin
 
 
-class UserRole(_Base):
+class UserRole(_Base, UUIDTableMixin, CreatedAtTableMixin, UpdatedAtTableMixin):
     __table_args__ = (
         UniqueConstraint("user_uuid", "role_uuid", name="idx_unique_user_role"),
         {"extend_existing": True},
@@ -16,7 +17,7 @@ class UserRole(_Base):
     role_uuid: Mapped[UUID] = mapped_column(ForeignKey("roles.uuid"), primary_key=True)
 
 
-class RolePermission(_Base):
+class RolePermission(_Base, UUIDTableMixin, CreatedAtTableMixin, UpdatedAtTableMixin):
     __table_args__ = (
         UniqueConstraint(
             "permission_uuid",

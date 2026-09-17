@@ -5,13 +5,14 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from infrastructure.database.models import _Base
+from infrastructure.database.models._mixins import UUIDTableMixin, CreatedAtTableMixin, UpdatedAtTableMixin
 
 if TYPE_CHECKING:
     from infrastructure.database.models.permission import Permission
     from infrastructure.database.models.user import User
 
 
-class Role(_Base):
+class Role(_Base, UUIDTableMixin, CreatedAtTableMixin, UpdatedAtTableMixin):
 
     name: Mapped[str] = mapped_column(String, unique=True, comment="Название")
 
